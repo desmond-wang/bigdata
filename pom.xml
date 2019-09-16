@@ -8,8 +8,13 @@
   <packaging>jar</packaging>
   <name>assignments</name>
   <version>1.0</version>
+<<<<<<< HEAD
   <description>Assignments for CS 451 Data-Intensive Distributed Computing (Fall 2019) at the University of Waterloo</description>
   <url>https://roegiest.com/bigdata-2019w/</url>
+=======
+  <description>Assignments for CS 451 Data-Intensive Distributed Computing (Winter 2018) at the University of Waterloo</description>
+  <url>https://lintool.github.io/bigdata-2018w/</url>
+>>>>>>> d728a096788081efbbd17dd4929626180d258668
 
   <repositories>
     <repository>
@@ -98,7 +103,11 @@
     <dependency>
       <groupId>io.bespin</groupId>
       <artifactId>bespin</artifactId>
+<<<<<<< HEAD
       <version>1.0.4</version>
+=======
+      <version>1.0.1</version>
+>>>>>>> d728a096788081efbbd17dd4929626180d258668
     </dependency>
   </dependencies>
 
