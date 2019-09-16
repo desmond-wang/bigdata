@@ -114,6 +114,12 @@ public class WordCount extends Configured implements Tool {
       }
       SUM.set(sum);
       context.write(key, SUM);
+
+      // String key_string = key.toString();
+      // if(key_string.equals("waterloo")){
+
+      //      LOG.info("----WATERLOO " + sum);
+      // }
     }
   }
 
