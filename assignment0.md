@@ -14,13 +14,15 @@ For the word cout job, there are 14 mapper runing in parallel.
 The number of *Waterloo* apperared **3620** times.   
 
 ### Question 5
-game	369
-for	251
-day	187
-and	176
-score	151
-world	137
-record	133
-strangers	123
-the	116
-season	113
+| X   | Frequency |
+|:-----:|:------------:|
+| game | 369            |
+| for | 251             |        
+| day | 187             |
+| and | 176             |
+| score | 151           |
+| world | 137           |
+| record | 133          |
+| strangers | 123       |
+| the | 116             |
+| season | 113          |
