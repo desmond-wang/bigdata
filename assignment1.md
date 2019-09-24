@@ -26,10 +26,11 @@ Student encironment: linux.student.cs.uwaterloo.ca
 ### Question 4  
 Using threshold 10, I am able to extract *77198* pairs of distinct PMI.   
 
-### Question 5
-####Highest PMI
+### Question 5   
+
+#### Highest PMI    
 (maine, anjou) 3.6331422, (anjou, maine) 3.6331422.
-####Lowerst PMI
+#### Lowerst PMI   
 (you, thy) -1.5303967, (thy, you) -1.5303967
 
 "maine" and "anjou" are most likely occure in the same line, maybe is is the name of main character.
