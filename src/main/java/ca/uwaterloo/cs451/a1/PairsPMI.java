@@ -239,7 +239,7 @@ public class PairsPMI extends Configured implements Tool {
         sum += iter.next().get();
       }
 
-      if (sum >= threshold) {
+      if (sum >= threshold && key.getLeftElement() != "*") {
         float total = X_Star_Map.get("*");
 
         float xyprob = sum / total;
