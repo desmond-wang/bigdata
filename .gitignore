@@ -12,6 +12,8 @@
 ######################
 *.sql
 *.sqlite
+*.log
+/target/*
 
 # OS generated files #
 ######################
