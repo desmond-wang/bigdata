@@ -53,7 +53,7 @@ import io.bespin.java.util.Tokenizer;
 
 
 public class StripesPMI extends Configured implements Tool {
-   private static final Logger LOG = Logger.getLogger(io.bespin.java.mapreduce.bigram.StripesPMI.class);
+   private static final Logger LOG = Logger.getLogger(StripesPMI.class);
 
 
     // First stage(count number of lines): emit the pair with (key, 1) for each unique pair,
@@ -132,8 +132,7 @@ public class StripesPMI extends Configured implements Tool {
      @Override
      public void map(LongWritable key, Text value, Context context)
          throws IOException, InterruptedException {
-       Map<String, HMapStFW> stripes = new HashMap<>();
-       hashMap<String, HMapStFW> stripes = new HashMap<String, HMapStFW>();
+       HashMap<String, HMapStFW> stripes = new HashMap<String, HMapStFW>();
 
          String line = ((Text) value).toString();
          StringTokenizer tokens = new StringTokenizer(line);
@@ -159,7 +158,7 @@ public class StripesPMI extends Configured implements Tool {
                  if (stripes.containsKey(words[i])) {
                      HMapStFW stripe = stripes.get(words[i]);
                      if (stripe.containsKey(words[j])) {
-                         stripes.put(words[j], stripe.get(cur) + 1.0f);
+                         stripe.put(words[j], stripe.get(words[j]) + 1.0f);
                      } else {
                          stripe.put(words[j], 1.0f);
                      }
@@ -240,11 +239,10 @@ public class StripesPMI extends Configured implements Tool {
        while (iter.hasNext()) {
          map.plus(iter.next());
        }
-       if (map.keySet() )
 
        for (String word: map.keySet()) {
            // get the total number
-           if (map.get(word) > threshold) {
+           // if (X_Star_Map.get(word) >= threshold) {
                float total = X_Star_Map.get("*");
 
                float xyprob = map.get(word) / total;
@@ -252,8 +250,8 @@ public class StripesPMI extends Configured implements Tool {
                float yprob = X_Star_Map.get(word) / total;
                float pmi = (float) Math.log10(xyprob / (xprob * yprob));
 
-               map.put(word.pmi);
-           }
+               map.put(word,pmi);
+           // }
        }
 
        context.write(key, map);
@@ -270,7 +268,7 @@ public class StripesPMI extends Configured implements Tool {
 
     private static final String input = "input";
     private static final String output = "output";
-    private static final String numReducers = "numReducers";
+    private static final String numReducers = "reducers";
     private static final String THRESHOLD = "threshold";
 
     /**
@@ -314,7 +312,7 @@ public class StripesPMI extends Configured implements Tool {
         LOG.info("Tool name: " + ca.uwaterloo.cs451.a1.StripesPMI.class.getSimpleName()+ "Phase 1");
         LOG.info(" - input path: " + inputPath);
         LOG.info(" - output path: " + intermediatePath);
-        LOG.info(" - num reducers: " + reduceTasks);
+        LOG.info(" - num reducers: " + 1);
         LOG.info(" - num threshold: " + thresholdTask);
 //    LOG.info(" - text output: " + args.textOutput);
 
@@ -324,7 +322,7 @@ public class StripesPMI extends Configured implements Tool {
 
         job1.getConfiguration().setInt("threshold", thresholdTask);
 
-        job1.setNumReduceTasks(reduceTasks);
+        job1.setNumReduceTasks(1);
 
         FileInputFormat.setInputPaths(job1, new Path(inputPath));
         FileOutputFormat.setOutputPath(job1, new Path(intermediatePath));
@@ -344,6 +342,12 @@ public class StripesPMI extends Configured implements Tool {
         job1.setReducerClass(StripesPMI.CountReducer.class);
 //    job1.setPartitionerClass(MyPartitioner.class);
 
+        job1.getConfiguration().setInt("mapred.max.split.size", 1024 * 1024 * 32);
+        job1.getConfiguration().set("mapreduce.map.memory.mb", "3072");
+        job1.getConfiguration().set("mapreduce.map.java.opts", "-Xmx3072m");
+        job1.getConfiguration().set("mapreduce.reduce.memory.mb", "3072");
+        job1.getConfiguration().set("mapreduce.reduce.java.opts", "-Xmx3072m");
+
 
         // Delete the output directory if it exists already.
         Path intermediateDir = new Path(intermediatePath);
@@ -353,6 +357,12 @@ public class StripesPMI extends Configured implements Tool {
         job1.waitForCompletion(true);
         System.out.println("Job Finished in " + (System.currentTimeMillis() - startTime) / 1000.0 + " seconds");
 
+//      Start second job
+        LOG.info("Tool name: " + ca.uwaterloo.cs451.a1.StripesPMI.class.getSimpleName()+ "Phase 2");
+        LOG.info(" - input path: " + inputPath);
+        LOG.info(" - output path: " + intermediatePath);
+        LOG.info(" - num reducers: " + reduceTasks);
+        LOG.info(" - num threshold: " + thresholdTask);
 
         Job job2 = Job.getInstance(getConf());
         job2.setJobName(StripesPMI.class.getSimpleName() + "calculation");
@@ -365,10 +375,10 @@ public class StripesPMI extends Configured implements Tool {
         FileInputFormat.setInputPaths(job2, new Path(inputPath));
         FileOutputFormat.setOutputPath(job2, new Path(outputPath));
 
-        job2.setMapOutputKeyClass(PairOfStrings.class);
-        job2.setMapOutputValueClass(FloatWritable.class);
-        job2.setOutputKeyClass(PairOfStrings.class);
-        job2.setOutputValueClass(FloatWritable.class);
+        job2.setMapOutputKeyClass(Text.class);
+        job2.setMapOutputValueClass(HMapStFW.class);
+        job2.setOutputKeyClass(Text.class);
+        job2.setOutputValueClass(HMapStFW.class);
 //    if (args.textOutput) {
         job2.setOutputFormatClass(TextOutputFormat.class);
 //    } else {
@@ -379,6 +389,12 @@ public class StripesPMI extends Configured implements Tool {
         job2.setCombinerClass(StripesPMI.MyCombiner.class);
         job2.setReducerClass(StripesPMI.MyReducer.class);
 //    job2.setPartitionerClass(MyPartitioner.class);
+//
+        job2.getConfiguration().setInt("mapred.max.split.size", 1024 * 1024 * 32);
+        job2.getConfiguration().set("mapreduce.map.memory.mb", "3072");
+        job2.getConfiguration().set("mapreduce.map.java.opts", "-Xmx3072m");
+        job2.getConfiguration().set("mapreduce.reduce.memory.mb", "3072");
+        job2.getConfiguration().set("mapreduce.reduce.java.opts", "-Xmx3072m");
 
 
         // Delete the output directory if it exists already.
@@ -400,6 +416,6 @@ public class StripesPMI extends Configured implements Tool {
     * @throws Exception if tool encounters an exception
     */
    public static void main(String[] args) throws Exception {
-     ToolRunner.run(new io.bespin.java.mapreduce.bigram.StripesPMI(), args);
+     ToolRunner.run(new StripesPMI(), args);
    }
  }

@@ -267,7 +267,7 @@ public class PairsPMI extends Configured implements Tool {
 
   private static final String input = "input";
   private static final String output = "output";
-  private static final String numReducers = "numReducers";
+  private static final String numReducers = "reducers";
   private static final String THRESHOLD = "threshold";
 
   /**
@@ -311,7 +311,7 @@ public class PairsPMI extends Configured implements Tool {
     LOG.info("Tool name: " + PairsPMI.class.getSimpleName()+ "Phase 1");
     LOG.info(" - input path: " + inputPath);
     LOG.info(" - output path: " + intermediatePath);
-    LOG.info(" - num reducers: " + reduceTasks);
+    LOG.info(" - num reducers: " + 1);
     LOG.info(" - num threshold: " + thresholdTask);
 //    LOG.info(" - text output: " + args.textOutput);
 
@@ -321,10 +321,16 @@ public class PairsPMI extends Configured implements Tool {
 
     job1.getConfiguration().setInt("threshold", thresholdTask);
 
-    job1.setNumReduceTasks(reduceTasks);
+    job1.setNumReduceTasks(1);
 
     FileInputFormat.setInputPaths(job1, new Path(inputPath));
     FileOutputFormat.setOutputPath(job1, new Path(intermediatePath));
+
+    job1.getConfiguration().setInt("mapred.max.split.size", 1024 * 1024 * 32);
+    job1.getConfiguration().set("mapreduce.map.memory.mb", "3072");
+    job1.getConfiguration().set("mapreduce.map.java.opts", "-Xmx3072m");
+    job1.getConfiguration().set("mapreduce.reduce.memory.mb", "3072");
+    job1.getConfiguration().set("mapreduce.reduce.java.opts", "-Xmx3072m");
 
     job1.setMapOutputKeyClass(PairOfStrings.class);
     job1.setMapOutputValueClass(FloatWritable.class);
@@ -351,6 +357,13 @@ public class PairsPMI extends Configured implements Tool {
     System.out.println("Job Finished in " + (System.currentTimeMillis() - startTime) / 1000.0 + " seconds");
 
 
+    // Start Second job
+    LOG.info("Tool name: " + PairsPMI.class.getSimpleName()+ "Phase 2");
+    LOG.info(" - input path: " + inputPath);
+    LOG.info(" - output path: " + intermediatePath);
+    LOG.info(" - num reducers: " + reduceTasks);
+    LOG.info(" - num threshold: " + thresholdTask);
+
     Job job2 = Job.getInstance(getConf());
     job2.setJobName(PairsPMI.class.getSimpleName() + "calculation");
     job2.setJarByClass(PairsPMI.class);
@@ -375,8 +388,14 @@ public class PairsPMI extends Configured implements Tool {
     job2.setMapperClass(MyMapper.class);
     job2.setCombinerClass(MyCombiner.class);
     job2.setReducerClass(MyReducer.class);
+
 //    job2.setPartitionerClass(MyPartitioner.class);
 
+    job2.getConfiguration().setInt("mapred.max.split.size", 1024 * 1024 * 32);
+    job2.getConfiguration().set("mapreduce.map.memory.mb", "3072");
+    job2.getConfiguration().set("mapreduce.map.java.opts", "-Xmx3072m");
+    job2.getConfiguration().set("mapreduce.reduce.memory.mb", "3072");
+    job2.getConfiguration().set("mapreduce.reduce.java.opts", "-Xmx3072m");
 
     // Delete the output directory if it exists already.
     Path outputDir = new Path(outputPath);
