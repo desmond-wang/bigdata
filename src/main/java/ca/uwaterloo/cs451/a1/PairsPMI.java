@@ -16,17 +16,25 @@
 
 package ca.uwaterloo.cs451.a1;
 
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 import java.lang.Math;
+import java.util.StringTokenizer;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -42,18 +50,13 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
-import io.bespin.java.util.Tokenizer;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
-import org.kohsuke.args4j.ParserProperties;
-import sun.tools.jar.CommandLine;
 import tl.lin.data.pair.PairOfStrings;
+import io.bespin.java.util.Tokenizer;
 
 
 
 public class PairsPMI extends Configured implements Tool {
-  private static final Logger LOG = Logger.getLogger(io.bespin.java.mapreduce.bigram.PairsPMI.class);
+  private static final Logger LOG = Logger.getLogger(PairsPMI.class);
 
   // First stage(count number of lines): emit the pair with (key, 1) for each unique pair,
   // key[*,*] as a single line, key[x,*] as times x occur.
@@ -66,30 +69,15 @@ public class PairsPMI extends Configured implements Tool {
     @Override
     public void map(LongWritable key, Text value, Context context)
             throws IOException, InterruptedException {
-      List line = ((Text) value).toString();
-      StringTokenizer itr = new StringTokenizer(line);
-      Set<String> uniLine = new HashSet<String>();
-      String lineToken = "";
+      String line = ((Text) value).toString();
+      StringTokenizer tokens = new StringTokenizer(line);
 
-      while(itr.hasMoreTokens()){
-        lineToken = itr.nextToken();
-
-        if (lineToken.length() == 0){
-          // remove empty line
-          continue;
-        }
-
-        if (uniLine.add(lineToken)){
-          BIGRAM.set(lineToken,"*");
-          context.write(BIGRAM, ONE);
-        }
-      }
-
-      List<String> tokens = Tokenizer.tokenize(value.toString());
       Set<String> sortedWords = new TreeSet<String>();
       int count = 0;
       while(tokens.hasMoreTokens() && count <= 40){
-        sortedWords.add(tokens.nextToken());
+          String w = tokens.nextToken().toLowerCase().replaceAll("(^[^a-z]+|[^a-z]+$)", "");
+          if (w.length() == 0) continue;
+        sortedWords.add(w);
         count++;
       }
 
@@ -115,10 +103,11 @@ public class PairsPMI extends Configured implements Tool {
   private static final class CountReducer extends
           Reducer<PairOfStrings, FloatWritable, PairOfStrings, FloatWritable> {
     private static final FloatWritable SUM = new FloatWritable();
+    private int threshold = 10;
 
     @Override
     public void setup(Context context) {
-      threshold = context.getConfiguration().getInt("threshold", 10)
+      threshold = context.getConfiguration().getInt("threshold", 10);
     }
 
     @Override
@@ -131,7 +120,7 @@ public class PairsPMI extends Configured implements Tool {
       }
 
       SUM.set(sum);
-      context,write(key,SUM);
+      context.write(key,SUM);
     }
   }
 
@@ -144,11 +133,15 @@ public class PairsPMI extends Configured implements Tool {
     @Override
     public void map(LongWritable key, Text value, Context context)
         throws IOException, InterruptedException {
-      List<String> tokens = Tokenizer.tokenize(value.toString());
+      String line = ((Text) value).toString();
+      StringTokenizer tokens = new StringTokenizer(line);
+
       Set<String> sortedWords = new TreeSet<String>();
       int count = 0;
       while(tokens.hasMoreTokens() && count <= 40){
-        sortedWords.add(tokens.nextToken());
+          String w = tokens.nextToken().toLowerCase().replaceAll("(^[^a-z]+|[^a-z]+$)", "");
+          if (w.length() == 0) continue;
+        sortedWords.add(w);
         count++;
       }
 
@@ -250,8 +243,8 @@ public class PairsPMI extends Configured implements Tool {
         float total = X_Star_Map.get("*");
 
         float xyprob = sum / total;
-        float xprob = X_Star_Map.get(key.getRightElement() / total);
-        float yprob = X_Star_Map.get(key.getLeftElement() / total);
+        float xprob = X_Star_Map.get(key.getRightElement()) / total;
+        float yprob = X_Star_Map.get(key.getLeftElement()) / total;
         float pmi = (float)Math.log10(xyprob / (xprob * yprob));
 
         VALUE.set(pmi);
@@ -270,38 +263,39 @@ public class PairsPMI extends Configured implements Tool {
   /**
    * Creates an instance of this tool.
    */
-  private PairsPMI() {}
+  public PairsPMI() {}
 
-  private static final class Args {
-    @Option(name = "-input", metaVar = "[path]", required = true, usage = "input path")
-    String input;
-
-    @Option(name = "-output", metaVar = "[path]", required = true, usage = "output path")
-    String output;
-
-    @Option(name = "-reducers", metaVar = "[num]", usage = "number of reducers")
-    int numReducers = 1;
-
-//    @Option(name = "-textOutput", usage = "use TextOutputFormat (otherwise, SequenceFileOutputFormat)")
-//    boolean textOutput = false;
-
-    @Option(name = "-threshold", metaVar = "[num]", usage = "number of threshold")
-    int threshold = 10;
-  }
+  private static final String input = "input";
+  private static final String output = "output";
+  private static final String numReducers = "numReducers";
+  private static final String THRESHOLD = "threshold";
 
   /**
    * Runs this tool.
    */
-  @Override
+  @SuppressWarnings({ "static-access" })
   public int run(String[] argv) throws Exception {
-    final Args args = new Args();
-    CmdLineParser parser = new CmdLineParser(args, ParserProperties.defaults().withUsageWidth(100));
+      Options options = new Options();
+    options.addOption(OptionBuilder.withArgName("path").hasArg().withDescription("input path").create(input));
+    options.addOption(OptionBuilder.withArgName("path").hasArg().withDescription("output path").create(output));
+    options.addOption(OptionBuilder.withArgName("num").hasArg().withDescription("number of reducers").create(numReducers));
+    options.addOption(OptionBuilder.withArgName("num").hasArg().withDescription("number of threshold").create(THRESHOLD));
+
+
     CommandLine cmdline;
-    try {
-      cmdline = parser.parseArgument(argv);
-    } catch (CmdLineException e) {
-      System.err.println(e.getMessage());
-      parser.printUsage(System.err);
+    CommandLineParser parser = new GnuParser(); 
+    try{
+        cmdline = parser.parse(options, argv);
+    } catch (ParseException exp) {
+        System.err.println("Error parsing command line: " + exp.getMessage());
+        return -1;
+    }
+      if(!cmdline.hasOption(input) || !cmdline.hasOption(output)) {
+      System.out.println("args: " + Arrays.toString(argv));
+      HelpFormatter formatter = new HelpFormatter();
+      formatter.setWidth(120);
+      formatter.printHelp(this.getClass().getName(), options);
+      ToolRunner.printGenericCommandUsage(System.out);
       return -1;
     }
 
@@ -311,10 +305,10 @@ public class PairsPMI extends Configured implements Tool {
     int reduceTasks = cmdline.hasOption(numReducers) ?
             Integer.parseInt(cmdline.getOptionValue(numReducers)) : 1;
 
-    int thresholdTask = cmdline.hasOption(threshold) ?
-            Integer.parseInt(cmdline.getOptionValue(threshold)) : 10;
+    int thresholdTask = cmdline.hasOption(THRESHOLD) ?
+            Integer.parseInt(cmdline.getOptionValue(THRESHOLD)) : 10;
 
-    LOG.info("Tool name: " + io.bespin.java.mapreduce.bigram.PairsPMI.class.getSimpleName());
+    LOG.info("Tool name: " + PairsPMI.class.getSimpleName()+ "Phase 1");
     LOG.info(" - input path: " + inputPath);
     LOG.info(" - output path: " + intermediatePath);
     LOG.info(" - num reducers: " + reduceTasks);
@@ -322,10 +316,10 @@ public class PairsPMI extends Configured implements Tool {
 //    LOG.info(" - text output: " + args.textOutput);
 
     Job job1 = Job.getInstance(getConf());
-    job1.setJobName(io.bespin.java.mapreduce.bigram.PairsPMI.class.getSimpleName() + "Count");
-    job1.setJarByClass(io.bespin.java.mapreduce.bigram.PairsPMI.class);
+    job1.setJobName(PairsPMI.class.getSimpleName() + "Count");
+    job1.setJarByClass(PairsPMI.class);
 
-    job1.getConfiguration().setInt("threshold", args.threshold);
+    job1.getConfiguration().setInt("threshold", thresholdTask);
 
     job1.setNumReduceTasks(reduceTasks);
 
@@ -356,12 +350,10 @@ public class PairsPMI extends Configured implements Tool {
     job1.waitForCompletion(true);
     System.out.println("Job Finished in " + (System.currentTimeMillis() - startTime) / 1000.0 + " seconds");
 
-    return 0;
-
 
     Job job2 = Job.getInstance(getConf());
-    job2.setJobName(io.bespin.java.mapreduce.bigram.PairsPMI.class.getSimpleName() + "calculation");
-    job2.setJarByClass(io.bespin.java.mapreduce.bigram.PairsPMI.class);
+    job2.setJobName(PairsPMI.class.getSimpleName() + "calculation");
+    job2.setJarByClass(PairsPMI.class);
 
     job2.getConfiguration().setInt("threshold", thresholdTask);
 
