@@ -39,7 +39,7 @@ Using threshold 10, I am able to extract *77198* pairs of distinct PMI.
 ### Question 6
 **tears**  
 (tears, shed) 2.1117902 (tears, salt) 2.0528123 (tears, eyes) 1.165167  
-**death**
+**death**   
 (death, father's) 1.120252 (death, die) 0.75415933 (death, life) 0.7381346  
 
 ### Question 7
