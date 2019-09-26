@@ -242,7 +242,7 @@ public class StripesPMI extends Configured implements Tool {
 
        for (String word: map.keySet()) {
            // get the total number
-           if (X_Star_Map.get(word) >= threshold && word != "*") {
+           if (map.get(word) >= threshold) {
                float total = X_Star_Map.get("*");
 
                float xyprob = map.get(word) / total;
