@@ -60,9 +60,9 @@ object ComputeBigramRelativeFrequencyPairs extends Tokenizer {
       // x workers
       .set("spark.executor.instances", args.numExecutors)
       // x cores on each workers
-      .set("spark.executor.cores", args.executorCores);
+      .set("spark.executor.cores", args.executorCores)
       // x g for executor memory
-      .set("spark.executor.memory", args.executorMemory);
+      .set("spark.executor.memory", args.executorMemory)
 
     val sc = new SparkContext(conf)
 

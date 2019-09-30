@@ -60,9 +60,9 @@ object ComputeBigramRelativeFrequencyStripes extends Tokenizer {
       // x workers
       .set("spark.executor.instances", args.numExecutors)
       // x cores on each workers
-      .set("spark.executor.cores", args.executorCores);
+      .set("spark.executor.cores", args.executorCores)
       // x g for executor memory
-      .set("spark.executor.memory", args.executorMemory);
+      .set("spark.executor.memory", args.executorMemory)
 
     val sc = new SparkContext(conf)
 
@@ -76,11 +76,11 @@ object ComputeBigramRelativeFrequencyStripes extends Tokenizer {
         val tokens1 = tokenize(line)
         val tokens2 = tokenize(line)
         // List of (x, y) and (x, *)
-        (if (tokens1.length > 1) tokens1.sliding(2).toList.map(p=> {
+        if (tokens1.length > 1) tokens1.sliding(2).toList.map(p=> {
           var immutableMap = scala.collection.immutable.Map[Stirng,Int]()
           var subList = immutableMap + (p(1) -> 1)
           (p(0),subList)
-        })) else List()
+        }) else List()
       })
 
       .reduceByKey((x,y) => x ++ y.map {case (k,v) => k -> (v + x.getOrElse(k,0))})
