@@ -14,7 +14,7 @@
   * limitations under the License.
   */
 
-package io.bespin.scala.spark.bigram
+package ca.uwaterloo.cs451.a2
 
 import io.bespin.scala.util.Tokenizer
 
@@ -29,10 +29,23 @@ class Conf(args: Seq[String]) extends ScallopConf(args) {
   val input = opt[String](descr = "input path", required = true)
   val output = opt[String](descr = "output path", required = true)
   val reducers = opt[Int](descr = "number of reducers", required = false, default = Some(1))
+  val numExecutors = opt[Int](descr = "number of executors", required = false)
+  val executorCores = opt[Int](descr = "number of executor cores", required = false)
+  val executorMemory = opt[Int](descr = "number of executor memory", required = false)
   verify()
 }
 
-object BigramCount extends Tokenizer {
+class myPartitioner(partitionNum: Int) extends Partitioner {
+  override def numPartitions: Int = partitionsNum
+  override def getPartition(key: Any): Int = {
+    val k = key.asInstanceOf[String]
+
+    return ( (k.split(" ").head.hashCode() & Integer.MAX_VALUE ) % numPartitions).toInt
+
+  }
+}
+
+object ComputeBigramRelativeFrequencyPairs extends Tokenizer {
   val log = Logger.getLogger(getClass().getName())
 
   def main(argv: Array[String]) {
@@ -42,7 +55,15 @@ object BigramCount extends Tokenizer {
     log.info("Output: " + args.output())
     log.info("Number of reducers: " + args.reducers())
 
-    val conf = new SparkConf().setAppName("Bigram Count")
+    val conf = new SparkConf()
+      .setAppName("Compute Bigram Relative Frequency Pairs")
+      // x workers
+      .set("spark.executor.instances", args.numExecutors)
+      // x cores on each workers
+      .set("spark.executor.cores", args.executorCores);
+      // x g for executor memory
+      .set("spark.executor.memory", args.executorMemory);
+
     val sc = new SparkContext(conf)
 
     val outputDir = new Path(args.output())
@@ -50,12 +71,35 @@ object BigramCount extends Tokenizer {
 
     val textFile = sc.textFile(args.input())
     val counts = textFile
+
       .flatMap(line => {
-        val tokens = tokenize(line)
-        if (tokens.length > 1) tokens.sliding(2).map(p => p.mkString(" ")).toList else List()
+        val tokens1 = tokenize(line)
+        val tokens2 = tokenize(line)
+        // List of (x, y) and (x, *)
+        List(
+        (if (tokens1.length > 1) tokens1.sliding(2).map(p => p.mkString(", ")).toList else List()),
+        (if (tokens2.length > 1) tokens2.map(p => p + ", *").toList.dropRight(1) else List())
+        ).flatten
       })
+
       .map(bigram => (bigram, 1))
       .reduceByKey(_ + _)
+      .sortByKey()
+
+      .partitionBy(new myPartitioner(args.reducers()))
+
+        .mapPartitions(x => {
+          var marginal = 0.0f
+          x.map(p => {
+
+            if (x._1.split(", ")(1) == "*"){
+              marginal = p._2.toFloat
+              ("(" + p._1 + ")", p._2)
+            } else {
+              ("(" + p._1 + ")", p._2 / , marginal)
+            }
+          })})
+
     counts.saveAsTextFile(args.output())
   }
 }
