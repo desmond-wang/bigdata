@@ -23,19 +23,22 @@ import org.apache.hadoop.fs._
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkConf
 import org.rogach.scallop._
+import org.apache.spark.Partitioner
 
 class Conf(args: Seq[String]) extends ScallopConf(args) {
-  mainOptions = Seq(numExecutors, executorCores, executorMemory, input, output, reducers)
+  mainOptions = Seq(
+    // numExecutors, executorCores, executorMemory, 
+    input, output, reducers)
   val input = opt[String](descr = "input path", required = true)
   val output = opt[String](descr = "output path", required = true)
   val reducers = opt[Int](descr = "number of reducers", required = false, default = Some(1))
-  val numExecutors = opt[Int](descr = "number of executors", required = false)
-  val executorCores = opt[Int](descr = "number of executor cores", required = false)
-  val executorMemory = opt[Int](descr = "number of executor memory", required = false)
+  // val numExecutors = opt[String](descr = "number of executors", required = false)
+  // val executorCores = opt[Int](descr = "number of executor cores", required = false)
+  // val executorMemory = opt[String](descr = "number of executor memory", required = false)
   verify()
 }
 
-class myPartitioner(partitionNum: Int) extends Partitioner {
+class myPartitioner(partitionsNum: Int) extends Partitioner {
   override def numPartitions: Int = partitionsNum
   override def getPartition(key: Any): Int = {
     val k = key.asInstanceOf[String]
@@ -58,11 +61,11 @@ object ComputeBigramRelativeFrequencyPairs extends Tokenizer {
     val conf = new SparkConf()
       .setAppName("Compute Bigram Relative Frequency Pairs")
       // x workers
-      .set("spark.executor.instances", args.numExecutors)
+      // .set("spark.executor.instances", "2")
       // x cores on each workers
-      .set("spark.executor.cores", args.executorCores)
+      // .set("spark.executor.cores", "4")
       // x g for executor memory
-      .set("spark.executor.memory", args.executorMemory)
+      // .set("spark.executor.memory", "24G")
 
     val sc = new SparkContext(conf)
 
@@ -92,11 +95,11 @@ object ComputeBigramRelativeFrequencyPairs extends Tokenizer {
           var marginal = 0.0f
           x.map(p => {
 
-            if (x._1.split(", ")(1) == "*"){
+            if (p._1.split(", ")(1) == "*"){
               marginal = p._2.toFloat
               ("(" + p._1 + ")", p._2)
             } else {
-              ("(" + p._1 + ")", p._2 / , marginal)
+              ("(" + p._1 + ")", p._2 /  marginal)
             }
           })})
 

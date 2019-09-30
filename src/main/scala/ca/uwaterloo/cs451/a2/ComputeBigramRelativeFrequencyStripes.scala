@@ -8,19 +8,22 @@ import org.apache.hadoop.fs._
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkConf
 import org.rogach.scallop._
+import org.apache.spark.Partitioner
 
-class Conf(args: Seq[String]) extends ScallopConf(args) {
-  mainOptions = Seq(numExecutors, executorCores, executorMemory, input, output, reducers)
+class StripesConf(args: Seq[String]) extends ScallopConf(args) {
+  mainOptions = Seq(
+    // numExecutors, executorCores, executorMemory, 
+    input, output, reducers)
   val input = opt[String](descr = "input path", required = true)
   val output = opt[String](descr = "output path", required = true)
   val reducers = opt[Int](descr = "number of reducers", required = false, default = Some(1))
-  val numExecutors = opt[Int](descr = "number of executors", required = false)
-  val executorCores = opt[Int](descr = "number of executor cores", required = false)
-  val executorMemory = opt[Int](descr = "number of executor memory", required = false)
+  // val numExecutors = opt[Int](descr = "number of executors", required = false, default = Some(2))
+  // val executorCores = opt[Int](descr = "number of executor cores", required = false)
+  // val executorMemory = opt[String](descr = "number of executor memory", required = false)
   verify()
 }
 
-class myPartitioner(partitionNum: Int) extends Partitioner {
+class stripesPartitioner(partitionsNum: Int) extends Partitioner {
   override def numPartitions: Int = partitionsNum
   override def getPartition(key: Any): Int = {
     val k = key.asInstanceOf[String]
@@ -42,12 +45,11 @@ object ComputeBigramRelativeFrequencyStripes extends Tokenizer {
 
     val conf = new SparkConf()
       .setAppName("Compute Bigram Relative Frequency Stripes")
-      // x workers
-      .set("spark.executor.instances", args.numExecutors)
+      // x workers .set("spark.executor.instances", "2")
       // x cores on each workers
-      .set("spark.executor.cores", args.executorCores)
+      // .set("spark.executor.cores", "4")
       // x g for executor memory
-      .set("spark.executor.memory", args.executorMemory)
+      // .set("spark.executor.memory", "24G")
 
     val sc = new SparkContext(conf)
 
@@ -62,7 +64,7 @@ object ComputeBigramRelativeFrequencyStripes extends Tokenizer {
         val tokens2 = tokenize(line)
         // List of (x, y) and (x, *)
         if (tokens1.length > 1) tokens1.sliding(2).toList.map(p=> {
-          var immutableMap = scala.collection.immutable.Map[Stirng,Int]()
+          var immutableMap = scala.collection.immutable.Map[String,Int]()
           var subList = immutableMap + (p(1) -> 1)
           (p(0),subList)
         }) else List()
@@ -71,7 +73,7 @@ object ComputeBigramRelativeFrequencyStripes extends Tokenizer {
       .reduceByKey((x,y) => x ++ y.map {case (k,v) => k -> (v + x.getOrElse(k,0))})
 
       .sortByKey()
-      .partitionBy(new myPartitioner(args.reducers()))
+      .partitionBy(new stripesPartitioner(args.reducers()))
 
       .mapPartitions(x => {
         x.map(p => {
