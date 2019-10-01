@@ -26,10 +26,9 @@ class StripesPMIConf(args: Seq[String]) extends ScallopConf(args) {
 
 class stripesPmiPartitioner(partitionsNum: Int) extends Partitioner {
   override def numPartitions: Int = partitionsNum
-  override def getPartition(key: Any): Int = {
-    val k = key.asInstanceOf[String]
-
-    return ( (k.split(" ").head.hashCode() & Integer.MAX_VALUE ) % numPartitions).toInt
+  override def getPartition(key: Any): Int = key match {
+    case (x: String, y: String) =>
+      ((x.hashCode()  & Integer.MAX_VALUE ) % numPartitions).toInt
 
   }
 }
@@ -62,8 +61,11 @@ object StripesPMI extends Tokenizer {
     val textFile = sc.textFile(args.input())
     val singleWordCounts = textFile
       .flatMap(line =>{
-        val tokens = tokenize(line).take(40)
-        if (tokens.length > 1) tokens.map(p => p + ", *").toList.dropRight(1) else List()
+        val tokens = tokenize(line)
+          var set_tokens = tokens.take(40).toSet
+          if (tokens.length > 0) {
+            set_tokens.map(p => p).toList
+          } else List()
       })
       .map(bigram => (bigram, 1))
       .reduceByKey(_ + _)
@@ -72,9 +74,10 @@ object StripesPMI extends Tokenizer {
 
     val totalWordCounts = textFile
       .flatMap(line => {
+        // List of (x, y) and (x, *)
         val tokens = tokenize(line).take(40)
         // List of (x, y) and (x, *)
-        if (tokens.length > 1) tokens.map(p => "*, *").toList.dropRight(1) else List()
+         tokens.map(p => "*, *").toList
       })
 
       .map(bigram => ("*", 1))
@@ -88,11 +91,11 @@ object StripesPMI extends Tokenizer {
       .flatMap(line => {
         val tokens = tokenize(line).take(40)
         val setTokens = tokens.toSet
-        val pairs : ListBuffer[(String,String)] = ListBuffer()
+        val pairs = List[(String,String)]()
         for (x <- setTokens) {
           for (y <- setTokens) {
             if (x != y) {
-              pairs.append((x, y))
+               pairs :+ (x,y)
             }
           }
         }
@@ -106,8 +109,8 @@ object StripesPMI extends Tokenizer {
 
       .partitionBy(new stripesPmiPartitioner(args.reducers()))
 
-      .mapPartitions(x => {
-        x.map(p => {
+      
+        .map(p => {
           var prob_x = single_word_count.value.get(p._1).head
           var xy_map = scala.collection.mutable.Map[String,(Float,Float)]()
 
@@ -119,7 +122,6 @@ object StripesPMI extends Tokenizer {
           })
           (p._1, xy_map)
         })
-      })
 
     pmiCalculation.saveAsTextFile(args.output())
   }
