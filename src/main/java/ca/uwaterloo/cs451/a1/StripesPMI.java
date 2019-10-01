@@ -197,7 +197,9 @@ public class StripesPMI extends Configured implements Tool {
        private static final HashMap<String, Float> X_Star_Map = new HashMap<String, Float>();
        @Override
        public void setup(Context context) throws IOException {
+
            threshold = context.getConfiguration().getInt("threshold", 10);
+
            FileSystem fs = FileSystem.get(new Configuration());
            Path inFile = new Path("./temp/StripesPMI/part-r-00000");
            if (!fs.exists(inFile)) {
@@ -235,7 +237,7 @@ public class StripesPMI extends Configured implements Tool {
          throws IOException, InterruptedException {
        Iterator<HMapStFW> iter = values.iterator();
        HMapStFW map = new HMapStFW();
-
+       HMapStFW val = new HMapStFW();
        while (iter.hasNext()) {
          map.plus(iter.next());
        }
@@ -250,7 +252,8 @@ public class StripesPMI extends Configured implements Tool {
                float yprob = X_Star_Map.get(word) / total;
                float pmi = (float) Math.log10(xyprob / (xprob * yprob));
 
-               map.put(word,pmi);
+               val.put(pmi,map.get(word));
+               map.put(word,val);
            }
        }
 
