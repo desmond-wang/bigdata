@@ -26,10 +26,9 @@ class Conf(args: Seq[String]) extends ScallopConf(args) {
 
 class pairsPmiPartitioner(partitionsNum: Int) extends Partitioner {
   override def numPartitions: Int = partitionsNum
-  override def getPartition(key: Any): Int = {
-    val k = key.asInstanceOf[String]
-
-    return ( (k.split(" ").head.hashCode() & Integer.MAX_VALUE ) % numPartitions).toInt
+  override def getPartition(key: Any): Int = key match {
+    case (x: String, y: String) =>
+      ((x.hashCode()  & Integer.MAX_VALUE ) % numPartitions).toInt
 
   }
 }
@@ -64,8 +63,12 @@ object PairsPMI extends Tokenizer {
 
     val singleWordCounts = textFile
       .flatMap(line =>{
-        val tokens = tokenize(line).take(40)
-        if (tokens.length > 1) tokens.map(p => p + ", *").toList.dropRight(1) else List()
+        val tokens = tokenize(line)
+          var set_tokens = tokens.take(40).toSet
+          if (tokens.length > 0) {
+            set_tokens.map(p => p).toList
+        // if (tokens.length > 1) tokens.map(p => p + ", *").toList.dropRight(1) else List()
+          } else List()
       })
       .map(bigram => (bigram, 1))
       .reduceByKey(_ + _)
@@ -76,7 +79,7 @@ object PairsPMI extends Tokenizer {
       .flatMap(line => {
         val tokens = tokenize(line).take(40)
         // List of (x, y) and (x, *)
-        if (tokens.length > 1) tokens.map(p => "*, *").toList.dropRight(1) else List()
+         tokens.map(p => "*, *").toList
       })
 
       .map(bigram => ("*", 1))
@@ -104,8 +107,7 @@ object PairsPMI extends Tokenizer {
         .sortByKey()
 
         .partitionBy(new pairsPmiPartitioner(args.reducers()))
-        .mapPartitions(x => {
-          x.map(bigram => {
+        .map(bigram => {
             val co_count = bigram._2
             val prob_x = single_word_count.value.get(bigram._1._1).head
             val prob_y = single_word_count.value.get(bigram._1._2).head
@@ -114,7 +116,6 @@ object PairsPMI extends Tokenizer {
               (bigram._1, (pmi, co_count))
             }
           })
-        })
 
     pmiCalculation.saveAsTextFile(args.output())
   }
