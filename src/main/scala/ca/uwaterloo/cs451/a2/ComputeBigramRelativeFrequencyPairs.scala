@@ -25,7 +25,7 @@ import org.apache.spark.SparkConf
 import org.rogach.scallop._
 import org.apache.spark.Partitioner
 
-class Conf(args: Seq[String]) extends ScallopConf(args) {
+class ConfP(args: Seq[String]) extends ScallopConf(args) {
   mainOptions = Seq(
     // numExecutors, executorCores, executorMemory, 
     input, output, reducers)
