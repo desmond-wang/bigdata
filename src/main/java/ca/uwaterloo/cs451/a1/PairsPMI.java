@@ -52,7 +52,6 @@ import org.apache.log4j.Logger;
 
 import tl.lin.data.pair.PairOfStrings;
 import io.bespin.java.util.Tokenizer;
-import tl.lin.data.map.HMapStFW;
 
 
 
@@ -191,7 +190,7 @@ public class PairsPMI extends Configured implements Tool {
   // second stage reducer: calculate the PMI in pairs
   private static final class MyReducer extends
       Reducer<PairOfStrings, FloatWritable, PairOfStrings, FloatWritable> {
-    HMapStFW VALUE = new HMapStFW();
+    private static final FloatWritable VALUE = new FloatWritable();
     private float marginal = 0.0f;
     private int threshold = 10;
     private static final HashMap<String, Float> X_Star_Map = new HashMap<String, Float>();
@@ -248,8 +247,7 @@ public class PairsPMI extends Configured implements Tool {
         float yprob = X_Star_Map.get(key.getLeftElement()) / total;
         float pmi = (float)Math.log10(xyprob / (xprob * yprob));
 
-        VALUE.set(pmi,sum);
-
+        VALUE.set(pmi);
         context.write(key, VALUE);
       }
     }

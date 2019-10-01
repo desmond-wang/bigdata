@@ -11,20 +11,31 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="PairsPMI.java" pinned="false" current-in-tab="true">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="PairsPMI.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PairsPMI.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="329">
-              <caret line="326" lean-forward="true" selection-start-line="326" selection-end-line="326" />
+            <state relative-caret-position="134">
+              <caret line="248" lean-forward="true" selection-start-line="248" selection-end-line="248" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#2563#2571#0" expanded="true" />
-                <element signature="e#3174#3182#0" expanded="true" />
-                <element signature="e#3313#3314#0" expanded="true" />
-                <element signature="e#3388#3389#0" expanded="true" />
-                <element signature="e#4258#4266#0" expanded="true" />
-                <element signature="e#5846#5861#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="StripesPMI.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/StripesPMI.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="387">
+              <caret line="259" column="8" lean-forward="true" selection-start-line="259" selection-start-column="8" selection-end-line="259" selection-end-column="8" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#2816#2824#0" expanded="true" />
+                <element signature="e#4981#4989#0" expanded="true" />
+                <element signature="e#6986#7001#0" expanded="true" />
+                <element signature="e#9893#9931#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -32,10 +43,20 @@
       </file>
     </leaf>
   </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>StripesPMI</find>
+      <find>pairs</find>
+      <find>threshold</find>
+      <find>thresh</find>
+      <find>VALUE</find>
+    </findStrings>
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/PairsPMI.java" />
+        <option value="$PROJECT_DIR$/StripesPMI.java" />
       </list>
     </option>
   </component>
@@ -49,31 +70,16 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="155" />
+    <option name="x" value="111" />
     <option name="y" value="23" />
-    <option name="width" value="1280" />
+    <option name="width" value="1143" />
     <option name="height" value="777" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes>
-      <pane id="PackagesPane" />
-      <pane id="AndroidView" />
-      <pane id="Scope" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="a1" type="b2602c69:ProjectViewProjectNode" />
-              <item name="a1" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="Downloaded.Files.Path.Enabled" value="false" />
@@ -81,9 +87,10 @@
     <property name="Repository.Attach.Sources" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Problems" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
@@ -156,45 +163,79 @@
       <option name="presentableId" value="Default" />
       <updated>1569275609987</updated>
       <workItem from="1569275615721" duration="13489000" />
+      <workItem from="1569694814919" duration="468000" />
+      <workItem from="1569818088932" duration="381000" />
+      <workItem from="1569820058091" duration="2686000" />
+      <workItem from="1569824577709" duration="5638000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13489000" />
+    <option name="totallyTimeSpent" value="28655000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="155" y="23" width="1280" height="777" extended-state="0" />
+    <frame x="111" y="23" width="1143" height="777" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info anchor="right" id="Palette" />
+      <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="Palette&#9;" />
-      <window_info id="Image Layers" />
-      <window_info anchor="bottom" id="Java Enterprise" />
-      <window_info anchor="right" id="Capture Analysis" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
-      <window_info anchor="right" id="Maven Projects" />
-      <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
+      <window_info anchor="right" id="Palette&#9;" order="3" />
+      <window_info id="Image Layers" order="2" />
+      <window_info anchor="bottom" id="Java Enterprise" order="7" />
+      <window_info anchor="right" id="Capture Analysis" order="3" />
+      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
+      <window_info anchor="right" id="Maven Projects" order="3" />
+      <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info id="Capture Tool" />
-      <window_info id="Designer" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24959612" />
-      <window_info anchor="right" id="Database" />
+      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info id="Capture Tool" order="2" />
+      <window_info id="Designer" order="2" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.24886467" />
+      <window_info anchor="right" id="Database" order="3" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info id="UI Designer" />
-      <window_info anchor="right" id="Theme Preview" />
+      <window_info id="UI Designer" order="2" />
+      <window_info anchor="right" id="Theme Preview" order="3" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info id="Favorites" side_tool="true" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32941177" />
     </layout>
+    <layout-to-restore>
+      <window_info anchor="right" id="Palette" order="0" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="8" weight="0.25" />
+      <window_info anchor="right" id="Capture Analysis" order="1" />
+      <window_info anchor="bottom" id="Run" order="7" />
+      <window_info anchor="right" id="Theme Preview" order="2" />
+      <window_info anchor="bottom" id="Message" order="5" />
+      <window_info active="true" content_ui="combo" id="Project" order="5" visible="true" weight="0.24959612" />
+      <window_info id="Structure" order="6" side_tool="true" weight="0.25" />
+      <window_info anchor="right" id="Commander" order="6" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="7" weight="0.25" />
+      <window_info anchor="bottom" id="TODO" order="11" />
+      <window_info anchor="bottom" id="Version Control" order="3" show_stripe_button="false" />
+      <window_info id="Image Layers" order="0" />
+      <window_info id="Designer" order="1" />
+      <window_info id="UI Designer" order="2" />
+      <window_info anchor="bottom" id="Inspection" order="10" weight="0.4" />
+      <window_info anchor="right" id="Database" order="3" />
+      <window_info anchor="right" id="Palette&#9;" order="4" />
+      <window_info anchor="bottom" id="Terminal" order="1" />
+      <window_info anchor="bottom" id="Debug" order="8" weight="0.4" />
+      <window_info anchor="bottom" id="Database Changes" order="0" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Cvs" order="9" weight="0.25" />
+      <window_info anchor="bottom" id="Event Log" order="2" side_tool="true" />
+      <window_info id="Capture Tool" order="3" />
+      <window_info anchor="bottom" id="Find" order="6" />
+      <window_info anchor="bottom" id="Java Enterprise" order="4" />
+      <window_info anchor="right" id="Maven Projects" order="5" />
+      <window_info id="Favorites" order="4" side_tool="true" />
+    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -205,16 +246,123 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/PairsPMI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="329">
-          <caret line="326" lean-forward="true" selection-start-line="326" selection-end-line="326" />
+        <state relative-caret-position="3430">
+          <caret line="245" column="32" selection-start-line="245" selection-start-column="22" selection-end-line="245" selection-end-column="32" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2563#2571#0" expanded="true" />
-            <element signature="e#3174#3182#0" expanded="true" />
-            <element signature="e#3313#3314#0" expanded="true" />
-            <element signature="e#3388#3389#0" expanded="true" />
-            <element signature="e#4258#4266#0" expanded="true" />
-            <element signature="e#5846#5861#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/StripesPMI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3444">
+          <caret line="246" column="44" selection-start-line="246" selection-start-column="44" selection-end-line="246" selection-end-column="44" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#2816#2824#0" expanded="true" />
+            <element signature="e#4981#4989#0" expanded="true" />
+            <element signature="e#6986#7001#0" expanded="true" />
+            <element signature="e#9893#9931#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PairsPMI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2716">
+          <caret line="245" column="32" selection-start-line="245" selection-start-column="22" selection-end-line="245" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/StripesPMI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3416">
+          <caret line="246" column="44" selection-start-line="246" selection-start-column="44" selection-end-line="246" selection-end-column="44" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#2816#2824#0" expanded="true" />
+            <element signature="e#4981#4989#0" expanded="true" />
+            <element signature="e#6986#7001#0" expanded="true" />
+            <element signature="e#9893#9931#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PairsPMI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2716">
+          <caret line="245" column="32" selection-start-line="245" selection-start-column="22" selection-end-line="245" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/StripesPMI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3584">
+          <caret line="258" column="31" selection-start-line="258" selection-start-column="31" selection-end-line="258" selection-end-column="31" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#2816#2824#0" expanded="true" />
+            <element signature="e#4981#4989#0" expanded="true" />
+            <element signature="e#6986#7001#0" expanded="true" />
+            <element signature="e#9893#9931#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PairsPMI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3430">
+          <caret line="245" column="32" selection-start-line="245" selection-start-column="22" selection-end-line="245" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/StripesPMI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3612">
+          <caret line="258" column="31" lean-forward="true" selection-start-line="258" selection-start-column="31" selection-end-line="258" selection-end-column="31" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#2816#2824#0" expanded="true" />
+            <element signature="e#4981#4989#0" expanded="true" />
+            <element signature="e#6986#7001#0" expanded="true" />
+            <element signature="e#9893#9931#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PairsPMI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="258">
+          <caret line="41" column="41" lean-forward="true" selection-start-line="41" selection-start-column="41" selection-end-line="41" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PairsPMI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="134">
+          <caret line="248" lean-forward="true" selection-start-line="248" selection-end-line="248" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/StripesPMI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="387">
+          <caret line="259" column="8" lean-forward="true" selection-start-line="259" selection-start-column="8" selection-end-line="259" selection-end-column="8" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#2816#2824#0" expanded="true" />
+            <element signature="e#4981#4989#0" expanded="true" />
+            <element signature="e#6986#7001#0" expanded="true" />
+            <element signature="e#9893#9931#0" expanded="true" />
           </folding>
         </state>
       </provider>

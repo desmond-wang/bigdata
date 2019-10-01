@@ -50,6 +50,7 @@ import tl.lin.data.pair.PairOfStrings;
 import tl.lin.data.map.HMapStIW;
 import tl.lin.data.map.HMapStFW;
 import io.bespin.java.util.Tokenizer;
+import tl.lin.data.pair.PairOfWritables;
 
 
 public class StripesPMI extends Configured implements Tool {
@@ -195,6 +196,7 @@ public class StripesPMI extends Configured implements Tool {
    private static final class MyReducer extends Reducer<Text, HMapStFW, Text, HMapStFW> {
        private int threshold = 10;
        private static final HashMap<String, Float> X_Star_Map = new HashMap<String, Float>();
+//       private static final HashMap<Float, Float> VALUE = new HashMap<Float, Float>();
        @Override
        public void setup(Context context) throws IOException {
 
@@ -236,8 +238,8 @@ public class StripesPMI extends Configured implements Tool {
      public void reduce(Text key, Iterable<HMapStFW> values, Context context)
          throws IOException, InterruptedException {
        Iterator<HMapStFW> iter = values.iterator();
+
        HMapStFW map = new HMapStFW();
-       HMapStFW val = new HMapStFW();
        while (iter.hasNext()) {
          map.plus(iter.next());
        }
@@ -252,8 +254,8 @@ public class StripesPMI extends Configured implements Tool {
                float yprob = X_Star_Map.get(word) / total;
                float pmi = (float) Math.log10(xyprob / (xprob * yprob));
 
-               val.put(pmi,map.get(word));
-               map.put(word,val);
+//               VALUE.put(pmi,map.get(word));
+               map.put(word,pmi);
            }
        }
 
