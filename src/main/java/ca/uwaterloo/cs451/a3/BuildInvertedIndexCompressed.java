@@ -165,7 +165,6 @@ public class BuildInvertedIndexCompressed extends Configured implements Tool {
       DATA_OUTPUT_STREAM.close();
     }
   }
-  }
 
   private BuildInvertedIndexCompressed() {}
 
