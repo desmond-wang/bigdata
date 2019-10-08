@@ -119,7 +119,7 @@ public class BuildInvertedIndexCompressed extends Configured implements Tool {
         DataOutputStream dataBufferStream = new DataOutputStream(byteBufferStream);
 
         WritableUtils.writeVInt(dataBufferStream, df);
-        DATA_OUTPUT_STREAM.write(BYTE_OUTPUT_STREAM.toByteArray());
+        dataBufferStream.write(BYTE_OUTPUT_STREAM.toByteArray());
 
         WORD.set(prevWord);
         context.write(WORD, new BytesWritable(byteBufferStream.toByteArray()));
@@ -156,7 +156,7 @@ public class BuildInvertedIndexCompressed extends Configured implements Tool {
       DataOutputStream dataBufferStream = new DataOutputStream(byteBufferStream);
 
       WritableUtils.writeVInt(dataBufferStream, df);
-      DATA_OUTPUT_STREAM.write(BYTE_OUTPUT_STREAM.toByteArray());
+      dataBufferStream.write(BYTE_OUTPUT_STREAM.toByteArray());
 
       WORD.set(prevWord);
       context.write(WORD, new BytesWritable(byteBufferStream.toByteArray()));
