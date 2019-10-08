@@ -59,7 +59,7 @@ public class BooleanRetrievalCompressed extends Configured implements Tool {
     Path path = new Path(indexPath);
     FileStatus[] statusList = fs.listStatus(path);
     // remove _sucess
-    reducerSize = statusList.length -1;
+    reducerSize = statusList.length - 1;
     indexList = new MapFile.Reader[reducerSize];
 
     int index = 0;
@@ -69,6 +69,9 @@ public class BooleanRetrievalCompressed extends Configured implements Tool {
         index++;
       }
     }
+
+   collection = fs.open(new Path(collectionPath));
+   stack = new Stack<>(); 
   }
 
 
