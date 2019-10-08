@@ -47,16 +47,17 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 
 public class BooleanRetrievalCompressed extends Configured implements Tool {
-  private MapFile.Reader index;
+  private MapFile.Reader[] indexList;
   private FSDataInputStream collection;
   private Stack<Set<Integer>> stack;
+  private int reducerSize;
 
   private BooleanRetrievalCompressed() {}
 
   private void initialize(String indexPath, String collectionPath, FileSystem fs) throws IOException {
     // read reduced files
     Path path = new Path(indexPath);
-    FileStatus[] statusList = fs.listStatis(path);
+    FileStatus[] statusList = fs.listStatus(path);
     // remove _sucess
     reducerSize = statusList.length -1;
     indexList = new MapFile.Reader[reducerSize];
@@ -65,7 +66,7 @@ public class BooleanRetrievalCompressed extends Configured implements Tool {
     for (FileStatus file : statusList) {
       if (file.getPath().toString().contains("part-")){
         indexList[index] = new MapFile.Reader(file.getPath(), fs.getConf());
-        index++
+        index++;
       }
     }
   }
@@ -140,18 +141,18 @@ public class BooleanRetrievalCompressed extends Configured implements Tool {
 
   private ArrayListWritable<PairOfInts> fetchPostings(String term) throws IOException {
     Text key = new Text();
-    PairOfWritables<IntWritable, ArrayListWritable<PairOfInts>> value =
-        new PairOfWritables<>();
+    BytesWritable value = new BytesWritable();
 
     key.set(term);
-    index.get(key, value);
+    int partition = (term.hashCode() & Integer.MAX_VALUE) % reducerSize; 
+    indexList[partition].get(key,value);
 
-    return processPosting(value)
+    return processPosting(value);
   }
 
 
   private ArrayListWritable<PairOfInts> processPosting (BytesWritable value) throws IOException {
-    ArrayListWritable<PairOfInts> posting = new ArrayListWritable<PairOfInts>;
+    ArrayListWritable<PairOfInts> posting = new ArrayListWritable<PairOfInts>();
     byte[] bytesVal = value.getBytes();
 
 

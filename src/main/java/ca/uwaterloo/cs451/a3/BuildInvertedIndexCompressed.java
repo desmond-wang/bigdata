@@ -57,7 +57,7 @@ import java.util.List;
 public class BuildInvertedIndexCompressed extends Configured implements Tool {
   private static final Logger LOG = Logger.getLogger(BuildInvertedIndexCompressed.class);
 
-  private static final class MyMapper extends Mapper<LongWritable, Text, PairOfStringInt, PairOfInts> {
+  private static final class MyMapper extends Mapper<LongWritable, Text, PairOfStringInt, IntWritable> {
       // key as doc number, value as how many times it appered
     private static final PairOfStringInt KEY = new PairOfStringInt();
     private static final IntWritable VALUE = new IntWritable();
@@ -85,9 +85,9 @@ public class BuildInvertedIndexCompressed extends Configured implements Tool {
     }
   }
 
-  private static final class MyPartitioner extends Partitioner<PairOfStringsInt, IntWritable> {
+  private static final class MyPartitioner extends Partitioner<PairOfStringInt, IntWritable> {
         @Override
-        public int getPartition(PairOfStringsInt key, IntWritable value, int numReduceTasks) {
+        public int getPartition(PairOfStringInt key, IntWritable value, int numReduceTasks) {
             return (key.getLeftElement().hashCode() & Integer.MAX_VALUE) % numReduceTasks;
         }
     }
@@ -119,13 +119,13 @@ public class BuildInvertedIndexCompressed extends Configured implements Tool {
         DataOutputStream dataBufferStream = new DataOutputStream(byteBufferStream);
 
         WritableUtils.writeVInt(dataBufferStream, df);
-        DATA_OUTPUT_STREAM.write(byteStream.toByteArray());
+        DATA_OUTPUT_STREAM.write(BYTE_OUTPUT_STREAM.toByteArray());
 
-        WORD.set(lastWord);
+        WORD.set(prevWord);
         context.write(WORD, new BytesWritable(byteBufferStream.toByteArray()));
 
         // posting reset
-        byteStream.reset();
+        BYTE_OUTPUT_STREAM.reset();
         prevDoc = 0;
         df = 0;
       }
@@ -156,9 +156,9 @@ public class BuildInvertedIndexCompressed extends Configured implements Tool {
       DataOutputStream dataBufferStream = new DataOutputStream(byteBufferStream);
 
       WritableUtils.writeVInt(dataBufferStream, df);
-      DATA_OUTPUT_STREAM.write(byteStream.toByteArray());
+      DATA_OUTPUT_STREAM.write(BYTE_OUTPUT_STREAM.toByteArray());
 
-      WORD.set(lastWord);
+      WORD.set(prevWord);
       context.write(WORD, new BytesWritable(byteBufferStream.toByteArray()));
 
       BYTE_OUTPUT_STREAM.close();
@@ -198,7 +198,7 @@ public class BuildInvertedIndexCompressed extends Configured implements Tool {
     LOG.info("Tool: " + BuildInvertedIndexCompressed.class.getSimpleName());
     LOG.info(" - input path: " + args.input);
     LOG.info(" - output path: " + args.output);
-    LOG.info(" - reducers: " + args.reducers)
+    LOG.info(" - reducers: " + args.reducers);
 
     Job job = Job.getInstance(getConf());
     job.setJobName(BuildInvertedIndexCompressed.class.getSimpleName());
@@ -209,10 +209,10 @@ public class BuildInvertedIndexCompressed extends Configured implements Tool {
     FileInputFormat.setInputPaths(job, new Path(args.input));
     FileOutputFormat.setOutputPath(job, new Path(args.output));
 
-    job.setMapOutputKeyClass(Text.class);
-    job.setMapOutputValueClass(PairOfInts.class);
+    job.setMapOutputKeyClass(PairOfStringInt.class);
+    job.setMapOutputValueClass(IntWritable.class);
     job.setOutputKeyClass(Text.class);
-    job.setOutputValueClass(PairOfWritables.class);
+    job.setOutputValueClass(BytesWritable.class);
     job.setOutputFormatClass(MapFileOutputFormat.class);
 
     job.setMapperClass(MyMapper.class);
