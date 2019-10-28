@@ -27,8 +27,8 @@
       <file leaf-file-name="StripesPMI.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/StripesPMI.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="387">
-              <caret line="259" column="8" lean-forward="true" selection-start-line="259" selection-start-column="8" selection-end-line="259" selection-end-column="8" />
+            <state relative-caret-position="359">
+              <caret line="257" column="28" selection-start-line="257" selection-start-column="28" selection-end-line="257" selection-end-column="28" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="imports" expanded="true" />
@@ -166,12 +166,12 @@
       <workItem from="1569694814919" duration="468000" />
       <workItem from="1569818088932" duration="381000" />
       <workItem from="1569820058091" duration="2686000" />
-      <workItem from="1569824577709" duration="5638000" />
+      <workItem from="1569824577709" duration="8637000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="28655000" />
+    <option name="totallyTimeSpent" value="31654000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="111" y="23" width="1143" height="777" extended-state="0" />
@@ -354,8 +354,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/StripesPMI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="387">
-          <caret line="259" column="8" lean-forward="true" selection-start-line="259" selection-start-column="8" selection-end-line="259" selection-end-column="8" />
+        <state relative-caret-position="359">
+          <caret line="257" column="28" selection-start-line="257" selection-start-column="28" selection-end-line="257" selection-end-column="28" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
