@@ -170,7 +170,7 @@ public class RunPersonalizedPageRankBasic extends Configured implements Tool {
           // Accumulate PageRank mass contributions.
           ArrayListOfFloatsWritable pagerank = n.getPageRank();
           for (int i = 0; i < numSources; ++i) {
-            mass.set(i, sumLogProbs(mass.get(i), pagerank.egt(i)));
+            mass.set(i, sumLogProbs(mass.get(i), pagerank.get(i)));
           }
 
           massMessages++;
@@ -202,7 +202,7 @@ public class RunPersonalizedPageRankBasic extends Configured implements Tool {
     public void setup(Reducer<IntWritable, PageRankNode, IntWritable, PageRankNode>.Context context) {
       numSources = context.getConfiguration().getInt("NumSources", 1);
       // init: set all to log(0)
-      for (int i = 0; i < numSourcers; ++i){
+      for (int i = 0; i < numSources; ++i){
         totalMass.add(Float.NEGATIVE_INFINITY);
       }
     }
@@ -290,7 +290,7 @@ public class RunPersonalizedPageRankBasic extends Configured implements Tool {
       // Write to a file the amount of PageRank mass we've seen in this reducer.
       FileSystem fs = FileSystem.get(context.getConfiguration());
       FSDataOutputStream out = fs.create(new Path(path + "/" + taskId), false);
-      for (int i = o; i < numSources; ++i){
+      for (int i = 0; i < numSources; ++i){
         out.writeFloat(totalMass.get(i));
       }
       out.close();

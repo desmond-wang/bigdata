@@ -94,7 +94,7 @@ public class BuildPersonalizedPageRankRecords extends Configured implements Tool
         if (nodeId == sid) {
           massList.add(0.0f); // already log with base 2
         } else {
-          mass.add(Float.NEGATIVE_INFINITY); // already log with base 2
+          massList.add(Float.NEGATIVE_INFINITY); // already log with base 2
         }
       }
       node.setPageRank(massList);
