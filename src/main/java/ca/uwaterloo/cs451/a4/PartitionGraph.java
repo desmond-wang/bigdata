@@ -43,7 +43,10 @@ import java.util.Arrays;
  * <p>
  * Driver program for partitioning the graph.
  * </p>
- **/
+ *
+ * @author Jimmy Lin
+ * @author Michael Schatz
+ */
 public class PartitionGraph extends Configured implements Tool {
   private static final Logger LOG = Logger.getLogger(PartitionGraph.class);
 
@@ -64,6 +67,7 @@ public class PartitionGraph extends Configured implements Tool {
   @SuppressWarnings({ "static-access" })
   public int run(String[] args) throws Exception {
     Options options = new Options();
+
 
     options.addOption(OptionBuilder.withArgName("path").hasArg()
         .withDescription("input path").create(INPUT));
@@ -125,6 +129,7 @@ public class PartitionGraph extends Configured implements Tool {
 
     job.setOutputKeyClass(IntWritable.class);
     job.setOutputValueClass(PageRankNode.class);
+
 
     FileSystem.get(conf).delete(new Path(outPath), true);
 

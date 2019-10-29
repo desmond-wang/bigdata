@@ -30,7 +30,8 @@ import java.io.IOException;
 
 /**
  * Representation of a graph node for PageRank.
- **/
+ *
+ */
 public class PageRankNode implements Writable {
   public static enum Type {
     Complete((byte) 0),  // PageRank mass and adjacency list.
@@ -48,8 +49,8 @@ public class PageRankNode implements Writable {
 
   private Type type;
   private int nodeid;
-  private ArrayListOfFloatsWritable pagerank; // for multi-source
-  private ArrayListOfIntsWritable adjacenyList;
+  private ArrayListOfFloatsWritable pagerank; // multi-sources
+  private ArrayListOfIntsWritable adjacencyList;
 
   public PageRankNode() {}
 
@@ -69,12 +70,12 @@ public class PageRankNode implements Writable {
     this.nodeid = n;
   }
 
-  public ArrayListOfIntsWritable getAdjacenyList() {
-    return adjacenyList;
+  public ArrayListOfIntsWritable getAdjacencyList() {
+    return adjacencyList;
   }
 
   public void setAdjacencyList(ArrayListOfIntsWritable list) {
-    this.adjacenyList = list;
+    this.adjacencyList = list;
   }
 
   public Type getType() {
@@ -108,8 +109,8 @@ public class PageRankNode implements Writable {
       pagerank.readFields(in);
     }
 
-    adjacenyList = new ArrayListOfIntsWritable();
-    adjacenyList.readFields(in);
+    adjacencyList = new ArrayListOfIntsWritable();
+    adjacencyList.readFields(in);
   }
 
   /**
@@ -132,13 +133,13 @@ public class PageRankNode implements Writable {
       pagerank.write(out);
     }
 
-    adjacenyList.write(out);
+    adjacencyList.write(out);
   }
 
   @Override
   public String toString() {
-    return String.format("{%d %s %s}", nodeid, pagerank.toString(50), (adjacenyList == null ? "[]"
-        : adjacenyList.toString(10)));
+    return String.format("{%d %s %s}", nodeid, pagerank.toString(50), (adjacencyList == null ? "[]"
+        : adjacencyList.toString(10)));
   }
 
   /**

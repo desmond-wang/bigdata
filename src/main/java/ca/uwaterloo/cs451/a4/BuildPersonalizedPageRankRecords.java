@@ -42,6 +42,7 @@ import org.apache.log4j.Logger;
 import tl.lin.data.array.ArrayListOfIntsWritable;
 import tl.lin.data.array.ArrayListOfFloatsWritable;
 
+import javax.sound.midi.Soundbank;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -50,8 +51,8 @@ import java.util.Arrays;
  * Driver program that takes a plain-text encoding of a directed graph and builds corresponding
  * Hadoop structures for representing the graph.
  * </p>
- **/
-
+ *
+ */
 public class BuildPersonalizedPageRankRecords extends Configured implements Tool {
   private static final Logger LOG = Logger.getLogger(BuildPersonalizedPageRankRecords.class);
 
@@ -69,14 +70,13 @@ public class BuildPersonalizedPageRankRecords extends Configured implements Tool
       if (n == 0) {
         throw new RuntimeException(NODE_CNT_FIELD + " cannot be 0!");
       }
-
       String[] sourceList = context.getConfiguration().getStrings(SOURCE_NODES_FIELD);
-      int total = sourceList.length;
-	    sourceID = new int[total];
-	    for (int i = 0; i < total; i++) {
-	      sourceID[i] = Integer.parseInt(sourceList[i]);
-	    }
-
+      int length = sourceList.length;
+      sourceID = new int[length];
+      // move to global int list from string list
+      for (int i = 0; i < length; ++i) {
+        sourceID[i] = Integer.parseInt(sourceList[i]);
+      }
       node.setType(PageRankNode.Type.Complete);
     }
 
@@ -84,21 +84,20 @@ public class BuildPersonalizedPageRankRecords extends Configured implements Tool
     public void map(LongWritable key, Text t, Context context) throws IOException,
         InterruptedException {
       String[] arr = t.toString().trim().split("\\s+");
-      int nodeID = Integer.parseInt(arr[0]);
-      nid.set(nodeID);
+      int nodeId = Integer.parseInt(arr[0]);
+      nid.set(nodeId);
 
-      // set PR mass as 1 for source nodes
-      // set PR mass as 0 for other nodes
-      // but need to take log value
-      ArrayListOfFloatsWritable mass = new ArrayListOfFloatsWritable();
+      // set source nodes mass as 1 with log
+      // set other nodes mass as 0 with log
+      ArrayListOfFloatsWritable massList = new ArrayListOfFloatsWritable();
       for (int sid : sourceID) {
-        if (nodeID == sid) {
-          mass.add(0.0f);
+        if (nodeId == sid) {
+          massList.add(0.0f); // already log with base 2
         } else {
-          mass.add(Float.NEGATIVE_INFINITY);
+            massList.add(Float.NEGATIVE_INFINITY); // already log with base 2
         }
       }
-      node.setPageRank(mass);
+      node.setPageRank(massList);
 
       if (arr.length == 1) {
         node.setNodeId(Integer.parseInt(arr[0]));
@@ -147,7 +146,7 @@ public class BuildPersonalizedPageRankRecords extends Configured implements Tool
     options.addOption(OptionBuilder.withArgName("num").hasArg()
         .withDescription("number of nodes").create(NUM_NODES));
     options.addOption(OptionBuilder.withArgName("source").hasArg()
-        .withDescription("source nodes").create(SOURCES));
+            .withDescription("source nodes").create(SOURCES));
 
     CommandLine cmdline;
     CommandLineParser parser = new GnuParser();
@@ -159,8 +158,7 @@ public class BuildPersonalizedPageRankRecords extends Configured implements Tool
       return -1;
     }
 
-    if (!cmdline.hasOption(INPUT) || !cmdline.hasOption(OUTPUT) || 
-    		!cmdline.hasOption(NUM_NODES) || !cmdline.hasOption(SOURCES)) {
+    if (!cmdline.hasOption(INPUT) || !cmdline.hasOption(OUTPUT) || !cmdline.hasOption(NUM_NODES) || !cmdline.hasOption(SOURCES)) {
       System.out.println("args: " + Arrays.toString(args));
       HelpFormatter formatter = new HelpFormatter();
       formatter.setWidth(120);
@@ -174,7 +172,7 @@ public class BuildPersonalizedPageRankRecords extends Configured implements Tool
     int n = Integer.parseInt(cmdline.getOptionValue(NUM_NODES));
     String sources = cmdline.getOptionValue(SOURCES);
 
-    LOG.info("Tool name: " + BuildPersonalizedPageRankRecords.class.getSimpleName());
+    LOG.info("Tool name: " + ca.uwaterloo.cs451.a4.BuildPersonalizedPageRankRecords.class.getSimpleName());
     LOG.info(" - inputDir: " + inputPath);
     LOG.info(" - outputDir: " + outputPath);
     LOG.info(" - numNodes: " + n);
