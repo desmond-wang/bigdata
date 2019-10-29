@@ -526,7 +526,7 @@ public class RunPersonalizedPageRankBasic extends Configured implements Tool {
     for (FileStatus f : fs.listStatus(new Path(outm))) {
       FSDataInputStream fin = fs.open(f.getPath());
       for (int o = 0; o < numSources; ++o) {
-        mass.add(t, sumLogProbs(mass.get(o), fin.readFloat()));
+        mass.add(o, sumLogProbs(mass.get(o), fin.readFloat()));
       }
       fin.close();
     }
