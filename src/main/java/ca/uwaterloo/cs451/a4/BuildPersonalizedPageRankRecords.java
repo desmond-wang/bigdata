@@ -94,7 +94,7 @@ public class BuildPersonalizedPageRankRecords extends Configured implements Tool
         if (nodeId == sid) {
           massList.add(0.0f); // already log with base 2
         } else {
-          massList.add(Float.NEGATIVE_INFINITY); // already log with base 2
+          mass.add(Float.NEGATIVE_INFINITY); // already log with base 2
         }
       }
       node.setPageRank(massList);
@@ -184,8 +184,8 @@ public class BuildPersonalizedPageRankRecords extends Configured implements Tool
     conf.setInt("mapred.min.split.size", 1024 * 1024 * 1024);
 
     Job job = Job.getInstance(conf);
-    job.setJobName(ca.uwaterloo.cs451.a4.BuildPersonalizedPageRankRecords.class.getSimpleName() + ":" + inputPath);
-    job.setJarByClass(ca.uwaterloo.cs451.a4.BuildPersonalizedPageRankRecords.class);
+    job.setJobName(BuildPersonalizedPageRankRecords.class.getSimpleName() + ":" + inputPath);
+    job.setJarByClass(BuildPersonalizedPageRankRecords.class);
 
     job.setNumReduceTasks(0);
 

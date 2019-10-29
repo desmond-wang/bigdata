@@ -170,7 +170,7 @@ public class RunPersonalizedPageRankBasic extends Configured implements Tool {
           // Accumulate PageRank mass contributions.
           ArrayListOfFloatsWritable pagerank = n.getPageRank();
           for (int i = 0; i < numSources; ++i) {
-            mass.set(i, sumLogProbs(mass.get(i), pagerank.get(i)));
+            mass.set(i, sumLogProbs(mass.get(i), pagerank.egt(i)));
           }
 
           massMessages++;
@@ -202,7 +202,7 @@ public class RunPersonalizedPageRankBasic extends Configured implements Tool {
     public void setup(Reducer<IntWritable, PageRankNode, IntWritable, PageRankNode>.Context context) {
       numSources = context.getConfiguration().getInt("NumSources", 1);
       // init: set all to log(0)
-      for (int i = 0; i < numSources; ++i){
+      for (int i = 0; i < numSourcers; ++i){
         totalMass.add(Float.NEGATIVE_INFINITY);
       }
     }
@@ -290,7 +290,7 @@ public class RunPersonalizedPageRankBasic extends Configured implements Tool {
       // Write to a file the amount of PageRank mass we've seen in this reducer.
       FileSystem fs = FileSystem.get(context.getConfiguration());
       FSDataOutputStream out = fs.create(new Path(path + "/" + taskId), false);
-      for (int i = 0; i < numSources; ++i){
+      for (int i = o; i < numSources; ++i){
         out.writeFloat(totalMass.get(i));
       }
       out.close();
@@ -331,7 +331,7 @@ public class RunPersonalizedPageRankBasic extends Configured implements Tool {
         if (nid.get() == sourceId[i]) {
           float jump = (float) (Math.log(ALPHA));
           float temp = missingMass.get(i);
-          float link = Float.NEGATIVE_INFINITY;
+          float link;
           if (temp == 0.0f) {
             link = (float) Math.log(1.0f - ALPHA) + sumLogProbs(p.get(i), Float.NEGATIVE_INFINITY);
           } else {
@@ -545,6 +545,9 @@ public class RunPersonalizedPageRankBasic extends Configured implements Tool {
       missingMassStringBuilder.append(",").append(missing.get(t));
     }
     String missingMassString = missingMassStringBuilder.toString();
+
+    LOG.info("missing PageRank mass: " + missingMassString);
+    LOG.info("number of nodes: " + numNodes);
 
     String in = basePath + "/iter" + formatter.format(j) + "t";
     String out = basePath + "/iter" + formatter.format(j);

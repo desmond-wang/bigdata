@@ -49,7 +49,7 @@ public class PageRankNode implements Writable {
 
   private Type type;
   private int nodeid;
-  private ArrayListOfFloatsWritable pagerank; // muti-sources
+  private ArrayListOfFloatsWritable pagerank; // multi-sources
   private ArrayListOfIntsWritable adjacencyList;
 
   public PageRankNode() {}
@@ -138,7 +138,7 @@ public class PageRankNode implements Writable {
 
   @Override
   public String toString() {
-    return String.format("{%d %.4f %s}", nodeid, pagerank, (adjacencyList == null ? "[]"
+    return String.format("{%d %s %s}", nodeid, pagerank.toString(50), (adjacencyList == null ? "[]"
         : adjacencyList.toString(10)));
   }
 

@@ -62,10 +62,10 @@ public class ExtractTopPersonalizedPageRankNodes extends Configured implements T
         public void setup(Context context) throws IOException {
             String[] stringSources = context.getConfiguration().getStrings("sources");
             numSources = stringSources.length;
-            int k = context.getConfiguration().getInt("n", 100);
+            int topN = context.getConfiguration().getInt("n", 100);
             queue = new TopScoredObjects[numSources];
             for (int i = 0; i < numSources; i++) {
-                queue[i] = new TopScoredObjects<>(k);
+                queue[i] = new TopScoredObjects<>(topN);
             }
         }
 
@@ -101,10 +101,10 @@ public class ExtractTopPersonalizedPageRankNodes extends Configured implements T
         public void setup(Context context) throws IOException {
             String[] stringSources = context.getConfiguration().getStrings("sources");
             numSources = stringSources.length;
-            int k = context.getConfiguration().getInt("n", 100);
+            int topN = context.getConfiguration().getInt("n", 100);
             queue = new TopScoredObjects[numSources];
             for (int i = 0; i < numSources; i++) {
-                queue[i] = new TopScoredObjects<>(k);
+                queue[i] = new TopScoredObjects<>(topN);
             }
             intSources = new int[numSources];
             for (int i = 0; i < numSources; i++) {
