@@ -1,0 +1,1 @@
+Due to false pushed the TPC-H-0.1.TXT and TPC-H-0.1-PARQUET folders, which caused disk full for linux student environment. I had to removing from the github by followed articale calle "Removing sensitive data from a repository". Since I am  rewriting history, you might need to delete the existing repository and re-clone it.
